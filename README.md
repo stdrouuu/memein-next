@@ -5,7 +5,7 @@ This project is deployed on **Vercel**, the platform created by the makers of Ne
 
 ## Live Demo: https://memein.vercel.app/
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4b454178-0a77-48f9-a4f6-d68e9c47d305" />
-For more details about deploying apps to Vercel, check out the official documentation:[https://vercel.com/docs](https://vercel.com/docs)
+For more details about deploying apps to Vercel, check out the official documentation:(https://vercel.com/docs)
 
 ## About This Project  
 This is a meme maker app called MemeIn that I built using **Next.js**, with **TypeScript**, **Tailwind CSS**, and **Shadcn**. I used **Konva** Javascript library to implement the canvas functionality, so users can upload images and edit them directly on the canvas. I also try adding support for light, dark, and system themes so users can switch based on their preference or device settings. 
