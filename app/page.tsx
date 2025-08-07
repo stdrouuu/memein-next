@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <>
       <ToggleButton />
-      <div className="min-h-screen bg-gray-50 dark:bg-black/5 py-4">
+      <div className="min-h-screen bg-white dark:bg-black/5 py-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-auto mt-8">
