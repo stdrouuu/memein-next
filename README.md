@@ -1,4 +1,4 @@
-# Meme maker (MemeIn) using Next.js & Konva library
+# Meme maker (MemeIn) using Next.js & React Konva library
 
 ## Deployment  
 This project is deployed on **Vercel**, the platform created by the makers of Next.js, for seamless and fast deployment of modern web applications.
@@ -8,7 +8,7 @@ This project is deployed on **Vercel**, the platform created by the makers of Ne
 For more details about deploying apps to Vercel, check out the official documentation:(https://vercel.com/docs)
 
 ## About This Project  
-This is a meme maker app called MemeIn that I built using **Next.js** with **Shadcn**, **TypeScript**, and **Tailwind CSS**. I used **Konva** Javascript library to implement the canvas functionality, so users can upload images and edit them directly on the canvas. I also try adding support for light, dark, and system themes so users can switch based on their preference or device settings. 
+This is a meme maker app called MemeIn that I built using **Next.js** with **Shadcn**, **TypeScript**, and **Tailwind CSS**. I used **React Konva** Javascript library to implement the canvas functionality, so users can upload images and edit them directly on the canvas. I also try adding support for light, dark, and system themes so users can switch based on their preference or device settings. 
 
 I'm still learning TypeScript, and this project has been a great way to practice it.
 
