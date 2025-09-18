@@ -3,7 +3,7 @@
 ## Deployment  
 This project is deployed on **Vercel**, the platform created by the makers of Next.js, for seamless and fast deployment of modern web applications.
 
-## Live Demo: https://memein.vercel.app/
+## Live: https://memein.vercel.app/
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4b454178-0a77-48f9-a4f6-d68e9c47d305" />
 For more details about deploying apps to Vercel, check out the official documentation:(https://vercel.com/docs)
 
