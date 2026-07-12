@@ -26,7 +26,29 @@ export default function Home() {
   } = useMeme();
 
   const [mounted, setMounted] = useState(false);
+
+  // Decorative image positions around the bento grid
+  // SSR-safe defaults; randomized on every client mount
+  type DecorItem = { top: string; side: 'left' | 'right'; offset: number; size: number };
+  const [decorPos, setDecorPos] = useState<DecorItem[]>([
+    { top: '6%',  side: 'left',  offset: 120, size: 220 },
+    { top: '8%',  side: 'right', offset: 100, size: 200 },
+    { top: '32%', side: 'left',  offset: 200, size: 240 },
+    { top: '28%', side: 'right', offset: 110, size: 220 },
+    { top: '62%', side: 'left',  offset: 120, size: 260 },
+    { top: '72%', side: 'right', offset: 110, size: 220 },
+  ]);
+
   useEffect(() => {
+    const r = (min: number, max: number) => Math.random() * (max - min) + min;
+    setDecorPos([
+      { top: `${r(4,  12)}%`, side: 'left',  offset: r(80, 140),  size: r(200, 260) }, // Pepe
+      { top: `${r(5,  15)}%`, side: 'right', offset: r(60, 130),  size: r(180, 240) }, // Croco
+      { top: `${r(28, 40)}%`, side: 'left',  offset: r(180, 250), size: r(240, 310) }, // Meme Face (noun-meme-face-8203411)
+      { top: `${r(22, 34)}%`, side: 'right', offset: r(70, 140),  size: r(200, 260) }, // Meme Face Alt
+      { top: `${r(58, 70)}%`, side: 'left',  offset: r(80, 140),  size: r(240, 310) }, // Jackie Chan
+      { top: `${r(68, 80)}%`, side: 'right', offset: r(70, 140),  size: r(200, 260) }, // Doge
+    ]);
     setMounted(true);
   }, []);
 
@@ -101,27 +123,31 @@ export default function Home() {
         {/* Asymmetrical Bento Grid */}
         <div className="relative">
           {/* Decorative images surrounding the sections, positioned relative to the bento wrapper */}
-          <div className="absolute top-[6%] xl:left-[-130px] lg:left-[-90px] left-[-40px] w-36 h-36 opacity-20 dark:opacity-30 brightness-0 dark:invert pointer-events-none select-none z-0">
-            <Image src="/assets/noun-meme-7212264.png" alt="Meme Icon" width={144} height={144} className="w-full h-full object-contain" />
-          </div>
-          <div className="absolute top-[8%] xl:right-[-120px] lg:right-[-80px] right-[-30px] w-32 h-32 opacity-20 dark:opacity-30 brightness-0 dark:invert pointer-events-none select-none z-0">
-            <Image src="/assets/noun-croco-7044312.png" alt="Croco Icon" width={128} height={128} className="w-full h-full object-contain" />
-          </div>
-          <div className="absolute top-[32%] xl:left-[-140px] lg:left-[-100px] left-[-50px] w-40 h-40 opacity-20 dark:opacity-30 brightness-0 dark:invert pointer-events-none select-none z-0">
-            <Image src="/assets/noun-meme-face-8203411.png" alt="Meme Face" width={160} height={160} className="w-full h-full object-contain" />
-          </div>
-          <div className="absolute top-[28%] xl:right-[-130px] lg:right-[-90px] right-[-40px] w-36 h-36 opacity-20 dark:opacity-30 brightness-0 dark:invert pointer-events-none select-none z-0">
-            <Image src="/assets/noun-meme-face-8203404 - Copy.png" alt="Meme Face Alternate" width={144} height={144} className="w-full h-full object-contain" />
-          </div>
-          <div className="absolute top-[62%] xl:left-[-130px] lg:left-[-90px] left-[-40px] w-44 h-44 opacity-20 dark:opacity-30 brightness-0 dark:invert pointer-events-none select-none z-0">
-            <Image src="/assets/noun-jackie-chan-105268.png" alt="Jackie Chan Icon" width={176} height={176} className="w-full h-full object-contain" />
-          </div>
-          <div className="absolute top-[50%] xl:right-[-140px] lg:right-[-100px] right-[-50px] w-48 h-48 opacity-20 dark:opacity-30 brightness-0 dark:invert pointer-events-none select-none z-0">
-            <Image src="/assets/noun-yao-ming-105260.png" alt="Yao Ming Icon" width={192} height={192} className="w-full h-full object-contain" />
-          </div>
-          <div className="absolute top-[72%] xl:right-[-130px] lg:right-[-90px] right-[-40px] w-36 h-36 opacity-20 dark:opacity-30 brightness-0 dark:invert pointer-events-none select-none z-0">
-            <Image src="/assets/noun-doge-99472.png" alt="Doge Icon" width={144} height={144} className="w-full h-full object-contain" />
-          </div>
+          {decorPos.map((p, i) => {
+            const images = [
+              { src: '/assets/noun-meme-7212264.png',        alt: 'Meme Icon' },
+              { src: '/assets/noun-croco-7044312.png',        alt: 'Croco' },
+              { src: '/assets/noun-meme-face-8203411.png',    alt: 'Meme Face' },
+              { src: '/assets/noun-meme-face-8203404 - Copy.png', alt: 'Meme Face Alt' },
+              { src: '/assets/noun-jackie-chan-105268.png',    alt: 'Jackie Chan' },
+              { src: '/assets/noun-doge-99472.png',           alt: 'Doge' },
+            ];
+            const img = images[i];
+            return (
+              <div
+                key={i}
+                className="absolute opacity-20 dark:opacity-30 brightness-0 dark:invert pointer-events-none select-none z-0"
+                style={{
+                  top: p.top,
+                  [p.side]: `-${p.offset}px`,
+                  width: `${p.size}px`,
+                  height: `${p.size}px`,
+                }}
+              >
+                <Image src={img.src} alt={img.alt} width={256} height={256} className="w-full h-full object-contain" />
+              </div>
+            );
+          })}
 
           <div
             className={`grid grid-cols-1 md:grid-cols-12 gap-6 transition-all duration-[1200ms] delay-200 ease-[cubic-bezier(0.32,0.72,0,1)] ${
