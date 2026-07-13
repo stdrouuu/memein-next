@@ -152,7 +152,7 @@ export default function UploadControls({
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-black/45 dark:text-white/45" />
               <Input
                 placeholder="Search templates..."
-                value={searchQuery}
+                value={searchQuery || ""}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 bg-transparent"
               />

@@ -53,7 +53,7 @@ export default function TextControls({
                 <Input
                   className="mt-1"
                   placeholder="Enter meme text..."
-                  value={selectedText.text}
+                  value={selectedText.text || ""}
                   onChange={(e) => onUpdateText(selectedId, { text: e.target.value })}
                 />
               </div>
