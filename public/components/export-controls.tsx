@@ -32,7 +32,7 @@ export default function ExportControls({
 
   const handleCopy = async () => {
     try {
-      const dataUrl = await onExport(format, "copy");
+      const dataUrl = await onExport("image/png", "copy");
       if (!dataUrl) return;
 
       const res = await fetch(dataUrl);

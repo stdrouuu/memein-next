@@ -227,7 +227,7 @@ export default function Home() {
                           onClick={resetCanvas}
                           className="text-xs font-bold uppercase tracking-wider text-black/40 dark:text-white/40 hover:text-red-500 dark:hover:text-red-400 bg-transparent transition-colors"
                         >
-                          Reset Canvas
+                          Reset
                         </button>
                       ) : (
                         <div className="w-9"></div>
