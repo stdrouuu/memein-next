@@ -1,9 +1,10 @@
-import { Upload } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { Layer, Stage, Image as KonvaImage } from "react-konva";
 import DraggableText from "./draggable-text";
 import { StageSize, TextElement } from "@/types/meme";
 import Konva from "konva";
 import { useRef, useState, useEffect } from "react";
+import gsap from "gsap";
 
 interface MemeCanvasProps {
   image: HTMLImageElement | null;
@@ -13,6 +14,7 @@ interface MemeCanvasProps {
   stageRef: React.RefObject<Konva.Stage | null>;
   onImageUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
 
 export default function MemeCanvas({
   image,
@@ -24,6 +26,7 @@ export default function MemeCanvas({
 }: MemeCanvasProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  
   const [containerWidth, setContainerWidth] = useState<number>(stageSize.width);
 
   useEffect(() => {
@@ -43,6 +46,7 @@ export default function MemeCanvas({
   }, [stageSize.width]);
 
   const scale = containerWidth < stageSize.width ? containerWidth / stageSize.width : 1;
+
 
   const handleContainerClick = () => {
     if (!image && fileInputRef.current) {
@@ -116,3 +120,4 @@ export default function MemeCanvas({
     </div>
   );
 }
+

@@ -13,6 +13,7 @@ interface TextControlsProps {
   selectedId: string | null;
   textElements: TextElement[];
 }
+
 export default function TextControls({
   hasImage,
   selectedId,
@@ -22,6 +23,7 @@ export default function TextControls({
   onDeleteText,
 }: TextControlsProps) {
   const selectedText = textElements.find((el) => el.id === selectedId);
+
   return (
     <>
       <Card>
@@ -68,3 +70,5 @@ export default function TextControls({
     </>
   );
 }
+
+
