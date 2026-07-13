@@ -93,9 +93,15 @@ export const useMeme = () => {
   const exportImage = useCallback(async (format: string = "image/png", action: "download" | "copy" | "share" = "download") => {
     if (!stageRef.current) return null;
 
-    await new Promise((resolve) => setTimeout(resolve, 150));
-    
     const stage = stageRef.current;
+
+    // Hide all transformer bounding boxes so they don't appear in the export
+    const transformers = stage.find("Transformer");
+    transformers.forEach((tr: any) => tr.hide());
+    stage.batchDraw();
+
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
     const oldWidth = stage.width();
     const oldHeight = stage.height();
     const oldScaleX = stage.scaleX();
@@ -118,6 +124,9 @@ export const useMeme = () => {
     stage.height(oldHeight);
     stage.scaleX(oldScaleX);
     stage.scaleY(oldScaleY);
+
+    // Restore transformer visibility
+    transformers.forEach((tr: any) => tr.show());
     stage.batchDraw();
 
     if (action === "download") {

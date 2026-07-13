@@ -8,7 +8,6 @@ interface DraggableTextProps {
   visible: boolean;
   onSelect: () => void;
   onUpdateText: (id: string, updates: Partial<TextElement>) => void;
-  onDblClick: () => void;
 }
 
 export default function DraggableText({
@@ -17,7 +16,6 @@ export default function DraggableText({
   visible,
   onSelect,
   onUpdateText,
-  onDblClick,
 }: DraggableTextProps) {
   const textRef = useRef<any>(null);
   const trRef = useRef<any>(null);
@@ -50,11 +48,9 @@ export default function DraggableText({
         }}
         onDblClick={(e) => {
           e.cancelBubble = true;
-          onDblClick();
         }}
         onDblTap={(e) => {
           e.cancelBubble = true;
-          onDblClick();
         }}
         offsetX={textProps.text.length * textProps.fontSize * 0.25}
         onDragEnd={(e) => {

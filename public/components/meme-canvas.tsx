@@ -13,6 +13,7 @@ interface MemeCanvasProps {
   selectedId: string | null;
   onSelectText: (id: string) => void;
   onUpdateText: (id: string, updates: Partial<TextElement>) => void;
+
   stageRef: React.RefObject<Konva.Stage | null>;
   onImageUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFileDrop?: (file: File) => void;
@@ -36,7 +37,6 @@ export default function MemeCanvas({
   const [containerWidth, setContainerWidth] = useState<number>(stageSize.width);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -194,53 +194,18 @@ export default function MemeCanvas({
                 key={textEl.id}
                 textProps={textEl}
                 isSelected={textEl.id === selectedId}
-                visible={editingId !== textEl.id}
+                visible={true}
                 onSelect={() => onSelectText(textEl.id)}
                 onUpdateText={onUpdateText}
-                onDblClick={() => setEditingId(textEl.id)}
               />
             ))}
           </Layer>
         </Stage>
 
-        {/* HTML inline editor overlay */}
-        {editingId && (() => {
-          const editingText = textElements.find(el => el.id === editingId);
-          if (!editingText) return null;
 
-          const offsetX = editingText.text.length * editingText.fontSize * 0.25;
-          const left = (editingText.x - offsetX) * scale;
-          const top = (editingText.y - (editingText.fontSize / 2)) * scale;
-          const width = (editingText.text.length * editingText.fontSize * 0.5) * scale;
-          const height = (editingText.fontSize * 1.2) * scale;
-
-          return (
-            <textarea
-              className="absolute bg-white text-black dark:bg-[#0a0a0a] dark:text-white border border-black/20 dark:border-white/20 rounded px-2 py-1 outline-none resize-none font-sans text-center shadow-lg z-30"
-              style={{
-                left: `${Math.max(4, Math.min(stageSize.width * scale - Math.max(140, width) - 4, left))}px`,
-                top: `${Math.max(4, Math.min(stageSize.height * scale - Math.max(45, height) - 4, top))}px`,
-                width: `${Math.max(140, width)}px`,
-                height: `${Math.max(45, height)}px`,
-                fontSize: `${editingText.fontSize * scale}px`,
-                fontFamily: editingText.fontFamily,
-                lineHeight: 1.1,
-              }}
-              value={editingText.text ?? ""}
-              onChange={(e) => onUpdateText(editingId, { text: e.target.value })}
-              onBlur={() => setEditingId(null)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  setEditingId(null);
-                }
-              }}
-              autoFocus
-            />
-          );
-        })()}
       </div>
     </div>
   );
 }
+
 
