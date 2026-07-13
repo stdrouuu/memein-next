@@ -46,7 +46,7 @@ export default function TextControls({
             <CardTitle>Edit Text</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
                 <Label className="text-sm font-semibold">Text Content</Label>
                 <Input
@@ -55,27 +55,6 @@ export default function TextControls({
                   value={selectedText.text}
                   onChange={(e) => onUpdateText(selectedId, { text: e.target.value })}
                 />
-              </div>
-
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <Label className="text-sm font-semibold">Font Size</Label>
-                  <span className="text-xs bg-black/5 dark:bg-white/10 px-2 py-0.5 rounded font-mono font-medium">
-                    {selectedText.fontSize}px
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] uppercase font-bold text-black/35 dark:text-white/35">Aa</span>
-                  <input
-                    type="range"
-                    min="12"
-                    max="120"
-                    value={selectedText.fontSize}
-                    onChange={(e) => onUpdateText(selectedId, { fontSize: parseInt(e.target.value) })}
-                    className="flex-1 accent-black dark:accent-white bg-black/10 dark:bg-white/10 h-1.5 rounded-lg appearance-none cursor-pointer"
-                  />
-                  <span className="text-lg font-bold text-black/35 dark:text-white/35">Aa</span>
-                </div>
               </div>
 
               <Button

@@ -234,6 +234,24 @@ export default function Home() {
                         onFileDrop={handleFileSelect}
                       />
                     </div>
+                    {selectedId && textElements.find(el => el.id === selectedId) && (
+                      <div className="px-6 py-4 border-t border-black/5 dark:border-white/5 bg-black/[0.01] dark:bg-white/[0.01] flex items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="flex items-center gap-3 flex-1 max-w-md">
+                          <span className="text-xs font-bold uppercase tracking-wider text-black/40 dark:text-white/40 whitespace-nowrap">Font Size</span>
+                          <input
+                            type="range"
+                            min="12"
+                            max="120"
+                            value={textElements.find(el => el.id === selectedId)?.fontSize || 40}
+                            onChange={(e) => updateText(selectedId, { fontSize: parseInt(e.target.value) })}
+                            className="flex-1 accent-black dark:accent-white bg-black/10 dark:bg-white/10 h-1.5 rounded-lg appearance-none cursor-pointer"
+                          />
+                        </div>
+                        <span className="text-xs font-mono font-bold bg-black/5 dark:bg-white/10 px-2 py-1 rounded">
+                          {textElements.find(el => el.id === selectedId)?.fontSize || 40}px
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
