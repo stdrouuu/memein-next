@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import ExportControls from "@/public/components/export-controls";
 import MemeCanvas from "@/public/components/meme-canvas";
@@ -8,6 +8,8 @@ import TextControls from "@/public/components/text-controls";
 import UploadControls from "@/public/components/upload-controls";
 import { useMeme } from "@/hooks/useMeme";
 import { ToggleButton } from "@/public/components/toggle-button";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 export default function Home() {
   const {
@@ -26,13 +28,52 @@ export default function Home() {
   } = useMeme();
 
   const [mounted, setMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // GSAP Animations (Respecting Prefers Reduced Motion)
+  useGSAP(() => {
+    if (!mounted) return;
+
+    const mm = gsap.matchMedia();
+
+    // Standard motion for users without reduced motion preferences
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.fromTo(
+        ".hero-stagger",
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power2.out" }
+      );
+
+      const cards = cardsRef.current.filter(Boolean);
+      gsap.fromTo(
+        cards,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.08,
+          ease: "power2.out",
+          delay: 0.2,
+        }
+      );
+    });
+
+    // Instant/crossfade transition fallback for prefers-reduced-motion
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      gsap.set(".hero-stagger", { y: 0, opacity: 1 });
+      gsap.set(cardsRef.current.filter(Boolean), { y: 0, opacity: 1 });
+    });
+
+  }, { scope: containerRef, dependencies: [mounted] });
+
   return (
-    <div className="min-h-[100dvh] bg-white dark:bg-[#050505] text-black dark:text-white font-sans relative selection:bg-black/10 dark:selection:bg-white/20">
+    <div ref={containerRef} className="min-h-[100dvh] bg-white dark:bg-[#050505] text-black dark:text-white font-sans relative selection:bg-black/10 dark:selection:bg-white/20 overflow-x-hidden w-full max-w-full">
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes drift1 {
           0% { transform: translate(0, 0) rotate(0deg) scale(1); }
@@ -48,6 +89,13 @@ export default function Home() {
         .meme-float-1 { animation: drift1 20s ease-in-out infinite; }
         .meme-float-2 { animation: drift2 25s ease-in-out infinite reverse; }
         .meme-float-3 { animation: drift1 22s ease-in-out infinite 5s; }
+        
+        @media (prefers-reduced-motion: reduce) {
+          .meme-float-1, .meme-float-2, .meme-float-3 {
+            animation: none !important;
+            transform: none !important;
+          }
+        }
       `}} />
 
       {/* Background Texture */}
@@ -77,39 +125,30 @@ export default function Home() {
         
         {/* Header Section */}
         <header className="flex flex-col items-center text-center space-y-6">
-          <div
-            className={`pt-8 transition-all duration-[1000ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
-              mounted ? "translate-y-0 opacity-100 blur-0" : "translate-y-16 opacity-0 blur-md"
-            }`}
-          >
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9] flex flex-col items-center gap-2">
+          <div className="hero-stagger pt-8">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.03em] leading-[0.9] flex flex-col items-center gap-2 text-balance">
               <span>Craft the</span>
               <span>Ultimate Meme.</span>
             </h1>
           </div>
-          <p
-            className={`max-w-xl text-lg md:text-xl text-black/60 dark:text-white/60 font-medium transition-all duration-[1000ms] delay-100 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-              mounted ? "translate-y-0 opacity-100 blur-0" : "translate-y-16 opacity-0 blur-md"
-            }`}
-          >
+          <p className="hero-stagger max-w-xl text-lg md:text-xl text-black/60 dark:text-white/60 font-medium leading-relaxed">
             Upload your image, orchestrate the typography, and export in a single fluid motion.
           </p>
         </header>
 
         {/* Asymmetrical Bento Grid */}
         <div className="relative">
-
-          <div
-            className={`grid grid-cols-1 md:grid-cols-12 gap-6 transition-all duration-[1200ms] delay-200 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-              mounted ? "translate-y-0 opacity-100 blur-0" : "translate-y-16 opacity-0 blur-md"
-            }`}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 grid-flow-dense">
+            
             {/* Main Canvas Area */}
-            <div className="md:col-span-8 md:row-span-2 group">
-              {/* Double Bezel Outer Shell */}
-              <div className="w-full h-full p-1.5 md:p-2 rounded-[2rem] bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]">
-                {/* Inner Core */}
-                <div className="w-full h-full relative overflow-hidden rounded-[calc(2rem-0.375rem)] md:rounded-[calc(2rem-0.5rem)] bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col">
+            <div 
+              ref={(el) => { if (el) cardsRef.current[0] = el; }}
+              className="md:col-span-8 md:row-span-2 group bento-card"
+            >
+              {/* Double Bezel Outer Shell - Capped roundness at 16px (rounded-2xl) */}
+              <div className="w-full h-full p-1.5 md:p-2 rounded-2xl bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 transition-all duration-300">
+                {/* Inner Core - Capped roundness at 12px (rounded-xl) */}
+                <div className="w-full h-full relative overflow-hidden rounded-xl bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-black/5 dark:border-white/5 flex flex-col">
                   <div className="px-6 py-4 border-b border-black/5 dark:border-white/5 flex justify-between items-center bg-black/[0.02] dark:bg-white/[0.02]">
                     <div className="flex gap-1.5 group/window cursor-default">
                       <div className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E] transition-all duration-300 hover:scale-110" />
@@ -134,9 +173,12 @@ export default function Home() {
             </div>
 
             {/* Controls Side Panel 1: Upload */}
-            <div className="md:col-span-4">
-              <div className="w-full h-full p-1.5 md:p-2 rounded-[2rem] bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10">
-                <div className="w-full h-full p-6 rounded-[calc(2rem-0.375rem)] md:rounded-[calc(2rem-0.5rem)] bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col justify-center gap-4">
+            <div 
+              ref={(el) => { if (el) cardsRef.current[1] = el; }}
+              className="md:col-span-4 bento-card"
+            >
+              <div className="w-full h-full p-1.5 md:p-2 rounded-2xl bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 transition-all duration-300">
+                <div className="w-full h-full p-6 rounded-xl bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-black/5 dark:border-white/5 flex flex-col justify-center gap-4">
                   <h3 className="text-xs uppercase tracking-widest text-black/50 dark:text-white/50 font-bold mb-2">Media</h3>
                   <UploadControls onImageUpload={handleImageUpload} onReset={resetCanvas} />
                 </div>
@@ -144,9 +186,12 @@ export default function Home() {
             </div>
 
             {/* Controls Side Panel 2: Typography & Export */}
-            <div className="md:col-span-4 flex flex-col gap-6">
-              <div className="w-full flex-1 p-1.5 md:p-2 rounded-[2rem] bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10">
-                <div className="w-full h-full p-6 rounded-[calc(2rem-0.375rem)] md:rounded-[calc(2rem-0.5rem)] bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col justify-start gap-4">
+            <div 
+              ref={(el) => { if (el) cardsRef.current[2] = el; }}
+              className="md:col-span-4 flex flex-col gap-6 bento-card"
+            >
+              <div className="w-full flex-1 p-1.5 md:p-2 rounded-2xl bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 transition-all duration-300">
+                <div className="w-full h-full p-6 rounded-xl bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-black/5 dark:border-white/5 flex flex-col justify-start gap-4">
                   <h3 className="text-xs uppercase tracking-widest text-black/50 dark:text-white/50 font-bold mb-2">Typography</h3>
                   <TextControls
                     hasImage={!!image}
@@ -159,12 +204,13 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="w-full p-1.5 md:p-2 rounded-[2rem] bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10">
-                <div className="w-full h-full p-6 rounded-[calc(2rem-0.375rem)] md:rounded-[calc(2rem-0.5rem)] bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]">
+              <div className="w-full p-1.5 md:p-2 rounded-2xl bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 transition-all duration-300">
+                <div className="w-full h-full p-6 rounded-xl bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-black/5 dark:border-white/5">
                   <ExportControls hasImage={!!image} onExport={exportImage} />
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </main>
