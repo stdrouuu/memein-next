@@ -134,7 +134,7 @@ export default function UploadControls({
       </CardHeader>
       <CardContent className="pt-4">
         {activeTab === "upload" ? (
-          <div className="space-y-4">
+          <div key="upload-tab" className="space-y-4">
             <div>
               <Label className="text-sm font-semibold">Choose Image (JPG/PNG)</Label>
               <Input
@@ -147,7 +147,7 @@ export default function UploadControls({
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div key="templates-tab" className="space-y-4">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-black/45 dark:text-white/45" />
               <Input

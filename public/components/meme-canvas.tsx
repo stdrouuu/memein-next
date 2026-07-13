@@ -215,7 +215,7 @@ export default function MemeCanvas({
                 fontFamily: editingText.fontFamily,
                 lineHeight: 1.1,
               }}
-              value={editingText.text}
+              value={editingText.text ?? ""}
               onChange={(e) => onUpdateText(editingId, { text: e.target.value })}
               onBlur={() => setEditingId(null)}
               onKeyDown={(e) => {
