@@ -225,7 +225,7 @@ export default function Home() {
                       {image ? (
                         <button
                           onClick={resetCanvas}
-                          className="text-xs font-bold uppercase tracking-wider text-black/40 dark:text-white/40 hover:text-red-500 dark:hover:text-red-400 bg-transparent transition-colors"
+                          className="text-xs font-bold tracking-wider text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 bg-transparent transition-colors"
                         >
                           Reset
                         </button>
