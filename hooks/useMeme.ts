@@ -15,11 +15,8 @@ export const useMeme = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
-  const handleImageUpload = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
+  const handleFileSelect = useCallback(
+    async (file: File) => {
       try {
         const img = await loadImageFromFile(file);
         const newStageSize = calculateStageSize(img);
@@ -33,6 +30,15 @@ export const useMeme = () => {
     []
   );
 
+  const handleImageUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      await handleFileSelect(file);
+    },
+    [handleFileSelect]
+  );
+
   const addText = useCallback(() => {
     const newText: TextElement = {
       id: `text-${Date.now()}`,
@@ -43,16 +49,16 @@ export const useMeme = () => {
       fill: "white",
       stroke: "black",
       strokeWidth: 1.5,
-      fontFamily: '"Anton", Impact, "Arial Black", sans-serif',
+      fontFamily: '"Anton", Impact, sans-serif',
       align: "center",
     };
     setTextElements((prev) => [...prev, newText]);
     setSelectedId(newText.id);
   }, [stageSize]);
 
-  const updateText = useCallback((id: string, newText: string) => {
+  const updateText = useCallback((id: string, updates: Partial<TextElement>) => {
     setTextElements((prev) =>
-      prev.map((el) => (el.id === id ? { ...el, text: newText } : el))
+      prev.map((el) => (el.id === id ? { ...el, ...updates } : el))
     );
   }, []);
 
@@ -114,6 +120,7 @@ export const useMeme = () => {
     stageSize,
     stageRef,
     handleImageUpload,
+    handleFileSelect,
     addText,
     updateText,
     deleteText,

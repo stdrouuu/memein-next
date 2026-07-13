@@ -16,6 +16,7 @@ export default function Home() {
     stageSize,
     stageRef,
     handleImageUpload,
+    handleFileSelect,
     addText,
     updateText,
     deleteText,
@@ -183,7 +184,7 @@ export default function Home() {
                 height={32}
                 className="w-8 h-8 object-contain brightness-0 dark:invert"
               />
-              <span className="text-sm font-bold tracking-widest">Memein</span>
+              <span className="text-sm font-bold">Memein</span>
             </div>
             <div className="w-[1px] h-4 bg-black/10 dark:bg-white/10" />
             <ToggleButton />
@@ -230,6 +231,7 @@ export default function Home() {
                         textElements={textElements}
                         onSelectText={setSelectedId}
                         onImageUpload={handleImageUpload}
+                        onFileDrop={handleFileSelect}
                       />
                     </div>
                   </div>

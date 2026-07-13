@@ -16,6 +16,7 @@ export default function DraggableText({
       draggable
       {...textProps}
       onClick={onSelect}
+      onTouchStart={onSelect}
       offsetX={textProps.text.length * textProps.fontSize * 0.3}
     />
   );

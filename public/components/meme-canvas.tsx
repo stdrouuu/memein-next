@@ -13,6 +13,7 @@ interface MemeCanvasProps {
   onSelectText: (id: string) => void;
   stageRef: React.RefObject<Konva.Stage | null>;
   onImageUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFileDrop?: (file: File) => void;
 }
 
 
@@ -23,11 +24,14 @@ export default function MemeCanvas({
   stageRef,
   onSelectText,
   onImageUpload,
+  onFileDrop,
 }: MemeCanvasProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [containerWidth, setContainerWidth] = useState<number>(stageSize.width);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -45,12 +49,48 @@ export default function MemeCanvas({
     return () => resizeObserver.disconnect();
   }, [stageSize.width]);
 
-  const scale = containerWidth < stageSize.width ? containerWidth / stageSize.width : 1;
+  // Monitor font loading to trigger canvas redraw once fonts like "Anton" are loaded asynchronously
+  useEffect(() => {
+    if (typeof window !== "undefined" && "fonts" in document) {
+      document.fonts.ready.then(() => {
+        setFontsLoaded(true);
+        if (stageRef.current) {
+          stageRef.current.batchDraw();
+        }
+      });
+    }
+  }, [stageRef]);
 
+  useEffect(() => {
+    if (stageRef.current) {
+      stageRef.current.batchDraw();
+    }
+  }, [fontsLoaded, textElements, stageRef]);
+
+  const scale = containerWidth < stageSize.width ? containerWidth / stageSize.width : 1;
 
   const handleContainerClick = () => {
     if (!image && fileInputRef.current) {
       fileInputRef.current.click();
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDraggingOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+    
+    const file = e.dataTransfer.files?.[0];
+    if (file && onFileDrop) {
+      onFileDrop(file);
     }
   };
 
@@ -59,9 +99,16 @@ export default function MemeCanvas({
       <div
         ref={containerRef}
         className="w-full flex justify-center items-center"
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
         <div
-          className="border-2 border-dashed border-gray rounded-lg overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-black/20 cursor-pointer hover:border-gray-400 dark:hover:border-white/40 transition-all duration-300 group/canvas"
+          className={`border-2 border-dashed rounded-lg overflow-hidden flex items-center justify-center cursor-pointer transition-all duration-300 group/canvas ${
+            isDraggingOver
+              ? "border-black dark:border-white bg-black/5 dark:bg-white/5 scale-[1.02] shadow-lg"
+              : "border-gray-300 dark:border-white/20 bg-gray-100 dark:bg-black/20 hover:border-gray-400 dark:hover:border-white/40"
+          }`}
           style={{ width: stageSize.width * scale, height: stageSize.height * scale }}
           onClick={handleContainerClick}
         >
@@ -75,7 +122,7 @@ export default function MemeCanvas({
           <div className="text-center text-gray-500 dark:text-white/70 group-hover/canvas:scale-105 transition-transform duration-300 p-4">
             <Upload className="w-12 h-12 mx-auto mb-2 text-gray-400 dark:text-white/40 group-hover/canvas:text-black dark:group-hover/canvas:text-white transition-colors duration-300" />
             <p className="font-medium group-hover/canvas:text-black dark:group-hover/canvas:text-white transition-colors duration-300 text-sm md:text-base">
-              Click to upload an image
+              {isDraggingOver ? "Drop image here!" : "Click or drag an image here to upload"}
             </p>
             <span className="text-xs text-gray-400 dark:text-white/40">JPG or PNG</span>
           </div>
@@ -88,9 +135,16 @@ export default function MemeCanvas({
     <div
       ref={containerRef}
       className="w-full flex justify-center items-center overflow-hidden"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
     >
       <div
-        className="border-2 border-dashed border-gray rounded-lg overflow-hidden flex items-center justify-center"
+        className={`border-2 rounded-lg overflow-hidden flex items-center justify-center transition-all duration-300 ${
+          isDraggingOver
+            ? "border-black dark:border-white scale-[1.01] ring-4 ring-black/5 dark:ring-white/10"
+            : "border-gray-200 dark:border-white/10"
+        }`}
         style={{ width: stageSize.width * scale, height: stageSize.height * scale }}
       >
         {/* KONVA: rendered to canvas*/}
