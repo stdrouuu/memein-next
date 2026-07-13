@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
 import { Button } from "@/shadcn/ui/button";
 import { Input } from "@/shadcn/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { Type } from "lucide-react";
+import { Text } from "reicon-react";
 import { TextElement } from "@/types/meme";
 
 interface TextControlsProps {
@@ -29,12 +29,13 @@ export default function TextControls({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Type className="w-5 h-5" />
+            <Text className="w-5 h-5" />
             Add Text
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Button className="w-full" onClick={onAddText} disabled={!hasImage}>
+          <Button className="w-full flex items-center justify-center gap-2" onClick={onAddText} disabled={!hasImage}>
+            <Text className="w-4 h-4" />
             Add Text
           </Button>
         </CardContent>
@@ -59,9 +60,10 @@ export default function TextControls({
 
               <Button
                 variant="destructive"
-                className="w-full"
+                className="w-full flex items-center justify-center gap-2"
                 onClick={() => onDeleteText(selectedId)}
               >
+                <Text className="w-4 h-4" />
                 Delete Text
               </Button>
             </div>

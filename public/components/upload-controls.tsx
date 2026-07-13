@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "@/shadcn/ui/button";
 import { Input } from "@/shadcn/ui/input";
-import { RotateCcw, Upload, Image as ImageIcon, Search, Loader2 } from "lucide-react";
+import { ArrowRotate, Upload, Image as ImageIcon, Search, Loader } from "reicon-react";
 import { useRef, useState, useEffect } from "react";
 
 interface MemeTemplate {
@@ -17,7 +17,6 @@ interface MemeTemplate {
 
 interface UploadControlsProps {
   onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onReset: () => void;
   onUrlSelect: (url: string) => void;
 }
 
@@ -68,7 +67,6 @@ const FALLBACK_TEMPLATES: MemeTemplate[] = [
 
 export default function UploadControls({
   onImageUpload,
-  onReset,
   onUrlSelect,
 }: UploadControlsProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -98,13 +96,6 @@ export default function UploadControls({
     fetchTemplates();
   }, []);
 
-  const handleReset = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    onReset();
-  };
-
   const filteredTemplates = (templates.length > 0 ? templates : FALLBACK_TEMPLATES).filter(
     (t) => t.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -122,7 +113,7 @@ export default function UploadControls({
               onClick={() => setActiveTab("upload")}
               className={`px-3 py-1 rounded-full font-semibold transition-all ${
                 activeTab === "upload"
-                  ? "bg-white dark:bg-zinc-850 text-black dark:text-white shadow-sm"
+                  ? "bg-white dark:bg-zinc-800 text-black dark:text-white shadow-sm"
                   : "text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white"
               }`}
             >
@@ -132,7 +123,7 @@ export default function UploadControls({
               onClick={() => setActiveTab("templates")}
               className={`px-3 py-1 rounded-full font-semibold transition-all ${
                 activeTab === "templates"
-                  ? "bg-white dark:bg-zinc-850 text-black dark:text-white shadow-sm"
+                  ? "bg-white dark:bg-zinc-800 text-black dark:text-white shadow-sm"
                   : "text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white"
               }`}
             >
@@ -154,14 +145,6 @@ export default function UploadControls({
                 onChange={onImageUpload}
               />
             </div>
-            <Button
-              variant="outline"
-              className="w-full bg-transparent border-red-500/20 hover:border-red-500/50 hover:bg-red-500/10 text-red-600 dark:text-red-400"
-              onClick={handleReset}
-            >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              Reset Canvas
-            </Button>
           </div>
         ) : (
           <div className="space-y-4">
@@ -177,7 +160,7 @@ export default function UploadControls({
 
             {loading && templates.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-black/50 dark:text-white/50">
-                <Loader2 className="w-6 h-6 animate-spin mb-2" />
+                <Loader className="w-6 h-6 animate-spin mb-2" />
                 <span className="text-xs">Loading templates...</span>
               </div>
             ) : (

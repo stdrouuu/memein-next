@@ -2,8 +2,9 @@
 
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
-import { Download, Copy, Share2, Check } from "lucide-react";
+import { Download, Copy, Share, Check } from "reicon-react";
 import { useState, useEffect } from "react";
+import { goeyToast } from "goey-toast";
 
 interface ExportControlsProps {
   hasImage: boolean;
@@ -23,7 +24,10 @@ export default function ExportControls({
   }, []);
 
   const handleDownload = async () => {
-    await onExport(format, "download");
+    const res = await onExport(format, "download");
+    if (res) {
+      goeyToast.success("Meme downloaded successfully!");
+    }
   };
 
   const handleCopy = async () => {
@@ -41,9 +45,11 @@ export default function ExportControls({
       ]);
 
       setCopied(true);
+      goeyToast.success("Meme copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy image to clipboard:", err);
+      goeyToast.error("Failed to copy image!");
     }
   };
 
@@ -80,9 +86,6 @@ export default function ExportControls({
       <CardContent className="space-y-4">
         {/* Format Selection */}
         <div>
-          <span className="text-xs uppercase tracking-widest text-black/50 dark:text-white/50 font-bold block mb-2">
-            Format
-          </span>
           <div className="grid grid-cols-2 gap-2 p-1 bg-black/5 dark:bg-white/5 rounded-lg">
             <button
               disabled={!hasImage}
@@ -104,7 +107,7 @@ export default function ExportControls({
                   : "text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white"
               }`}
             >
-              JPEG
+              JPG
             </button>
           </div>
         </div>
@@ -146,7 +149,7 @@ export default function ExportControls({
               disabled={!hasImage || !canShare}
               onClick={handleShare}
             >
-              <Share2 className="w-4 h-4" />
+              <Share className="w-4 h-4" />
               Share
             </Button>
           </div>

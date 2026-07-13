@@ -222,7 +222,16 @@ export default function Home() {
                         <div className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29] transition-all duration-300 hover:scale-110 delay-150" />
                       </div>
                       <h2 className="text-sm font-semibold tracking-wide text-black/40 dark:text-white/40">workspace.meme</h2>
-                      <div className="w-9"></div>
+                      {image ? (
+                        <button
+                          onClick={resetCanvas}
+                          className="text-xs font-bold uppercase tracking-wider text-black/40 dark:text-white/40 hover:text-red-500 dark:hover:text-red-400 bg-transparent transition-colors"
+                        >
+                          Reset Canvas
+                        </button>
+                      ) : (
+                        <div className="w-9"></div>
+                      )}
                     </div>
                     <div className="flex-1 flex justify-center items-center p-4 md:p-8 min-h-[400px]">
                       <MemeCanvas
@@ -230,29 +239,13 @@ export default function Home() {
                         stageSize={stageSize}
                         stageRef={stageRef}
                         textElements={textElements}
+                        selectedId={selectedId}
                         onSelectText={setSelectedId}
+                        onUpdateText={updateText}
                         onImageUpload={handleImageUpload}
                         onFileDrop={handleFileSelect}
                       />
                     </div>
-                    {selectedId && textElements.find(el => el.id === selectedId) && (
-                      <div className="px-6 py-4 border-t border-black/5 dark:border-white/5 bg-black/[0.01] dark:bg-white/[0.01] flex items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <div className="flex items-center gap-3 flex-1 max-w-md">
-                          <span className="text-xs font-bold uppercase tracking-wider text-black/40 dark:text-white/40 whitespace-nowrap">Font Size</span>
-                          <input
-                            type="range"
-                            min="12"
-                            max="120"
-                            value={textElements.find(el => el.id === selectedId)?.fontSize || 40}
-                            onChange={(e) => updateText(selectedId, { fontSize: parseInt(e.target.value) })}
-                            className="flex-1 accent-black dark:accent-white bg-black/10 dark:bg-white/10 h-1.5 rounded-lg appearance-none cursor-pointer"
-                          />
-                        </div>
-                        <span className="text-xs font-mono font-bold bg-black/5 dark:bg-white/10 px-2 py-1 rounded">
-                          {textElements.find(el => el.id === selectedId)?.fontSize || 40}px
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -261,8 +254,7 @@ export default function Home() {
               <div className="bento-card md:col-span-4">
                 <div className="w-full h-full p-1.5 md:p-2 rounded-[2rem] bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10">
                   <div className="w-full h-full p-6 rounded-[calc(2rem-0.375rem)] md:rounded-[calc(2rem-0.5rem)] bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col justify-center gap-4">
-                    <h3 className="text-xs uppercase tracking-widest text-black/50 dark:text-white/50 font-bold mb-2">Media</h3>
-                    <UploadControls onImageUpload={handleImageUpload} onReset={resetCanvas} onUrlSelect={handleUrlSelect} />
+                    <UploadControls onImageUpload={handleImageUpload} onUrlSelect={handleUrlSelect} />
                   </div>
                 </div>
               </div>
@@ -271,7 +263,6 @@ export default function Home() {
               <div className="bento-card md:col-span-4 flex flex-col gap-6">
                 <div className="w-full flex-1 p-1.5 md:p-2 rounded-[2rem] bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10">
                   <div className="w-full h-full p-6 rounded-[calc(2rem-0.375rem)] md:rounded-[calc(2rem-0.5rem)] bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col justify-start gap-4">
-                    <h3 className="text-xs uppercase tracking-widest text-black/50 dark:text-white/50 font-bold mb-2">Typography</h3>
                     <TextControls
                       hasImage={!!image}
                       onAddText={addText}
