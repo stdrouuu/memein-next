@@ -181,9 +181,9 @@ export default function Home() {
               <Image
                 src="/assets/logomemein.png"
                 alt="MemeIn Logo"
-                width={32}
-                height={32}
-                className="w-8 h-8 object-contain brightness-0 dark:invert"
+                width={24}
+                height={24}
+                className="w-6 h-6 object-contain brightness-0 dark:invert"
               />
               <span className="text-sm font-bold">Memein</span>
             </div>
