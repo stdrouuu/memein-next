@@ -3,6 +3,7 @@ import { Label } from "@radix-ui/react-label";
 import { Button } from "@/shadcn/ui/button";
 import { Input } from "@/shadcn/ui/input";
 import { RotateCcw, Upload } from "lucide-react";
+import { useRef } from "react";
 
 interface UploadControlsProps {
   onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -13,6 +14,15 @@ export default function UploadControls({
   onImageUpload,
   onReset,
 }: UploadControlsProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleReset = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    onReset();
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -26,6 +36,7 @@ export default function UploadControls({
           <div>
             <Label>Choose Image (JPG/PNG)</Label>
             <Input
+              ref={fileInputRef}
               type="file"
               accept="image/jpeg, image/png"
               className="mt-1"
@@ -35,7 +46,7 @@ export default function UploadControls({
           <Button
             variant="outline"
             className="w-full bg-transparent"
-            onClick={onReset}
+            onClick={handleReset}
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset Canvas

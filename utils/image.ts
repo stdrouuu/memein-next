@@ -18,8 +18,9 @@ export const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
 };
 
 export const calculateStageSize = (img: HTMLImageElement) => {
-  const maxWidth = 600;
-  const maxHeight = 400;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const maxWidth = isMobile ? 320 : 700;
+  const maxHeight = isMobile ? 380 : 500;
   const aspectRatio = img.width / img.height;
 
   let newWidth = maxWidth;

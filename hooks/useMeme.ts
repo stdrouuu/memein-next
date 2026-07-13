@@ -7,9 +7,9 @@ import { useCallback, useRef, useState } from "react";
 
 export const useMeme = () => {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
-  const [stageSize, setStageSize] = useState<StageSize>({
-    width: 600,
-    height: 400,
+  const [stageSize, setStageSize] = useState<StageSize>(() => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    return isMobile ? { width: 320, height: 320 } : { width: 700, height: 500 };
   });
   const [textElements, setTextElements] = useState<TextElement[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -43,7 +43,7 @@ export const useMeme = () => {
       fill: "white",
       stroke: "black",
       strokeWidth: 1.5,
-      fontFamily: "Impact, Arial Black, sans-serif",
+      fontFamily: '"Anton", Impact, "Arial Black", sans-serif',
       align: "center",
     };
     setTextElements((prev) => [...prev, newText]);
@@ -65,24 +65,47 @@ export const useMeme = () => {
     setImage(null);
     setTextElements([]);
     setSelectedId(null);
-    setStageSize({ width: 600, height: 400 });
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    setStageSize(isMobile ? { width: 320, height: 320 } : { width: 700, height: 500 });
   }, []);
 
   const exportImage = useCallback(async () => {
     if (!stageRef.current) return;
 
     await new Promise((resolve) => setTimeout(resolve, 150));
-    const uri = stageRef.current.toDataURL({
+    
+    const stage = stageRef.current;
+    const oldWidth = stage.width();
+    const oldHeight = stage.height();
+    const oldScaleX = stage.scaleX();
+    const oldScaleY = stage.scaleY();
+
+    // Reset to original size and scale of 1 for high-res export
+    stage.width(stageSize.width);
+    stage.height(stageSize.height);
+    stage.scaleX(1);
+    stage.scaleY(1);
+    stage.batchDraw();
+
+    const uri = stage.toDataURL({
       pixelRatio: 2,
       mimeType: "image/png",
     });
+
+    // Restore the responsive scaling state
+    stage.width(oldWidth);
+    stage.height(oldHeight);
+    stage.scaleX(oldScaleX);
+    stage.scaleY(oldScaleY);
+    stage.batchDraw();
+
     const link = document.createElement("a");
     link.download = "meme.png";
     link.href = uri;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }, []);
+  }, [stageSize]);
 
   return {
     image,

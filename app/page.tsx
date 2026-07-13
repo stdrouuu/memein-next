@@ -66,7 +66,7 @@ export default function Home() {
               height={32}
               className="w-8 h-8 object-contain brightness-0 dark:invert"
             />
-            <span className="text-sm font-bold tracking-widest uppercase">MemeIn</span>
+            <span className="text-sm font-bold tracking-widest">Memein</span>
           </div>
           <div className="w-[1px] h-4 bg-black/10 dark:bg-white/10" />
           <ToggleButton />
@@ -78,13 +78,10 @@ export default function Home() {
         {/* Header Section */}
         <header className="flex flex-col items-center text-center space-y-6">
           <div
-            className={`transition-all duration-[1000ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
+            className={`pt-8 transition-all duration-[1000ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${
               mounted ? "translate-y-0 opacity-100 blur-0" : "translate-y-16 opacity-0 blur-md"
             }`}
           >
-            <span className="inline-block rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 mb-4">
-              Creative Studio
-            </span>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9] flex flex-col items-center gap-2">
               <span>Craft the</span>
               <span>Ultimate Meme.</span>
@@ -129,6 +126,7 @@ export default function Home() {
                       stageRef={stageRef}
                       textElements={textElements}
                       onSelectText={setSelectedId}
+                      onImageUpload={handleImageUpload}
                     />
                   </div>
                 </div>
