@@ -17,6 +17,16 @@ export const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
   });
 };
 
+export const loadImageFromUrl = (url: string): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(new Error("Failed to load image from URL: " + url));
+    img.src = url;
+  });
+};
+
 export const calculateStageSize = (img: HTMLImageElement) => {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const maxWidth = isMobile ? 320 : 700;

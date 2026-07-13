@@ -1,7 +1,7 @@
 "use client";
 
 import { StageSize, TextElement } from "@/types/meme";
-import { calculateStageSize, loadImageFromFile } from "@/utils/image";
+import { calculateStageSize, loadImageFromFile, loadImageFromUrl } from "@/utils/image";
 import Konva from "konva";
 import { useCallback, useRef, useState } from "react";
 
@@ -25,6 +25,21 @@ export const useMeme = () => {
         setTextElements([]); //reset text after changing picture
       } catch (error) {
         console.error("Error loading image:", error);
+      }
+    },
+    []
+  );
+
+  const handleUrlSelect = useCallback(
+    async (url: string) => {
+      try {
+        const img = await loadImageFromUrl(url);
+        const newStageSize = calculateStageSize(img);
+        setStageSize(newStageSize);
+        setImage(img);
+        setTextElements([]); //reset text after changing picture
+      } catch (error) {
+        console.error("Error loading image from URL:", error);
       }
     },
     []
@@ -75,8 +90,8 @@ export const useMeme = () => {
     setStageSize(isMobile ? { width: 320, height: 320 } : { width: 700, height: 500 });
   }, []);
 
-  const exportImage = useCallback(async () => {
-    if (!stageRef.current) return;
+  const exportImage = useCallback(async (format: string = "image/png", action: "download" | "copy" | "share" = "download") => {
+    if (!stageRef.current) return null;
 
     await new Promise((resolve) => setTimeout(resolve, 150));
     
@@ -95,7 +110,7 @@ export const useMeme = () => {
 
     const uri = stage.toDataURL({
       pixelRatio: 2,
-      mimeType: "image/png",
+      mimeType: format,
     });
 
     // Restore the responsive scaling state
@@ -105,12 +120,18 @@ export const useMeme = () => {
     stage.scaleY(oldScaleY);
     stage.batchDraw();
 
-    const link = document.createElement("a");
-    link.download = "meme.png";
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (action === "download") {
+      const link = document.createElement("a");
+      const ext = format === "image/jpeg" ? "jpg" : "png";
+      link.download = `meme.${ext}`;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return uri;
+    }
+
+    return uri;
   }, [stageSize]);
 
   return {
@@ -127,5 +148,6 @@ export const useMeme = () => {
     resetCanvas,
     exportImage,
     setSelectedId,
+    handleUrlSelect,
   };
 };

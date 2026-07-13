@@ -25,6 +25,7 @@ export default function Home() {
     setSelectedId,
     textElements,
     selectedId,
+    handleUrlSelect,
   } = useMeme();
 
   const [loadingSkeleton, setLoadingSkeleton] = useState(true);
@@ -261,7 +262,7 @@ export default function Home() {
                 <div className="w-full h-full p-1.5 md:p-2 rounded-[2rem] bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10">
                   <div className="w-full h-full p-6 rounded-[calc(2rem-0.375rem)] md:rounded-[calc(2rem-0.5rem)] bg-white dark:bg-[#0a0a0a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col justify-center gap-4">
                     <h3 className="text-xs uppercase tracking-widest text-black/50 dark:text-white/50 font-bold mb-2">Media</h3>
-                    <UploadControls onImageUpload={handleImageUpload} onReset={resetCanvas} />
+                    <UploadControls onImageUpload={handleImageUpload} onReset={resetCanvas} onUrlSelect={handleUrlSelect} />
                   </div>
                 </div>
               </div>
