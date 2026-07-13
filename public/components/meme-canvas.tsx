@@ -54,16 +54,27 @@ export default function MemeCanvas({
     return () => resizeObserver.disconnect();
   }, [stageSize.width]);
 
-  // Monitor font loading to trigger canvas redraw once fonts like "Anton" are loaded asynchronously
+  // Explicitly pre-load Anton font before Konva draws — document.fonts.ready
+  // alone is unreliable on mobile Safari/Chrome because remote fonts can still
+  // be deferred at that point. fonts.load() blocks until the glyph data is
+  // actually available, guaranteeing a correct canvas render.
   useEffect(() => {
-    if (typeof window !== "undefined" && "fonts" in document) {
-      document.fonts.ready.then(() => {
+    if (typeof window === "undefined" || !("fonts" in document)) return;
+
+    const loadFont = async () => {
+      try {
+        await document.fonts.load('bold 40px "Anton"');
+      } catch {
+        // Ignore failures — fallback font will be used
+      } finally {
         setFontsLoaded(true);
         if (stageRef.current) {
           stageRef.current.batchDraw();
         }
-      });
-    }
+      }
+    };
+
+    loadFont();
   }, [stageRef]);
 
   useEffect(() => {
