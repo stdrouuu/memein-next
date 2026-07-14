@@ -4,7 +4,10 @@
 This project is deployed on **Vercel**, the platform created by the makers of Next.js, for seamless and fast deployment of modern web applications.
 
 ## Live: https://memein.vercel.app/
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4b454178-0a77-48f9-a4f6-d68e9c47d305" />
+<!-- <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4b454178-0a77-48f9-a4f6-d68e9c47d305" /> -->
+<!-- <img alt="Image" src="https://github.com/user-attachments/assets/08e73d2e-ccfe-47e7-aa63-fa148314554d" /> -->
+<img alt="Image" src="https://github.com/user-attachments/assets/ff390870-8f6c-4e61-9f56-bee9a328d9fc" /> 
+
 For more details about deploying apps to Vercel, check out the official documentation:(https://vercel.com/docs)
 
 ## About This Project  
