@@ -4,7 +4,7 @@ import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
 import { Download, Copy, Share, Check } from "reicon-react";
 import { useState, useEffect } from "react";
-import { goeyToast } from "goey-toast";
+import { gooeyToast } from "goey-toast";
 
 interface ExportControlsProps {
   hasImage: boolean;
@@ -17,6 +17,7 @@ export default function ExportControls({
 }: ExportControlsProps) {
   const [format, setFormat] = useState<string>("image/png");
   const [copied, setCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
   const [canShare, setCanShare] = useState(false);
 
   useEffect(() => {
@@ -26,7 +27,15 @@ export default function ExportControls({
   const handleDownload = async () => {
     const res = await onExport(format, "download");
     if (res) {
-      goeyToast.success("Meme downloaded successfully!");
+      setDownloaded(true);
+      gooeyToast.success("Meme downloaded successfully !", {
+        preset: "snappy",
+        showTimestamp: false,
+        timing: {
+          displayDuration: 3000,
+        },
+      });
+      setTimeout(() => setDownloaded(false), 2000);
     }
   };
 
@@ -45,11 +54,17 @@ export default function ExportControls({
       ]);
 
       setCopied(true);
-      goeyToast.success("Meme copied to clipboard!");
+      gooeyToast.success("Meme copied to clipboard !", {
+        preset: "snappy",
+        showTimestamp: false,
+        timing: {
+          displayDuration: 3000,
+        },
+      });
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy image to clipboard:", err);
-      goeyToast.error("Failed to copy image!");
+      gooeyToast.error("Failed to copy image!");
     }
   };
 
@@ -115,12 +130,39 @@ export default function ExportControls({
         {/* Action Buttons */}
         <div className="flex flex-col gap-2 pt-2">
           <Button
-            className="w-full flex items-center justify-center gap-2"
+            className="w-full flex items-center justify-center gap-2 relative overflow-hidden"
             disabled={!hasImage}
             onClick={handleDownload}
           >
-            <Download className="w-4 h-4" />
-            Download
+            <div className="relative w-4 h-4 flex items-center justify-center">
+              <Download
+                className={`absolute w-4 h-4 transition-all duration-300 transform ${
+                  downloaded ? "scale-0 rotate-90 opacity-0" : "scale-100 rotate-0 opacity-100"
+                }`}
+              />
+              <Check
+                className={`absolute w-4 h-4 text-green-500 transition-all duration-300 transform ${
+                  downloaded ? "scale-100 rotate-0 opacity-100" : "scale-0 -rotate-90 opacity-0"
+                }`}
+              />
+            </div>
+            <span className="relative h-5 overflow-hidden flex items-center justify-center">
+              <span className="invisible pointer-events-none">Downloaded</span>
+              <span
+                className={`absolute transition-all duration-300 ${
+                  downloaded ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"
+                }`}
+              >
+                Download
+              </span>
+              <span
+                className={`absolute transition-all duration-300 ${
+                  downloaded ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+                }`}
+              >
+                Downloaded
+              </span>
+            </span>
           </Button>
 
           <div className="grid grid-cols-2 gap-2">

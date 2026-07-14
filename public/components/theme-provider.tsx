@@ -4,8 +4,8 @@ import * as React from "react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import dynamic from "next/dynamic"
 
-const GoeyToaster = dynamic(
-  () => import("goey-toast").then((mod) => mod.GoeyToaster),
+const GooeyToaster = dynamic(
+  () => import("goey-toast").then((mod) => mod.GooeyToaster),
   { ssr: false }
 )
 
@@ -16,7 +16,7 @@ export function ThemeProvider({
   return (
     <NextThemesProvider {...props}>
       {children}
-      <GoeyToaster position="bottom-right" />
+      <GooeyToaster position="bottom-right" closeButton="bottom-right" />
     </NextThemesProvider>
   )
 }
