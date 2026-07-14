@@ -1,4 +1,4 @@
-# MemeIn - Meme Editor built with Next.js - Typescript, Shadcn, Tailwind, React Konva, & GSAP
+# Memein - Meme Editor built with Next.js w/ Typescript, Shadcn, Tailwind, React Konva, & GSAP
 
 ## Deployment  
 This project is deployed on **Vercel**, the platform created by the makers of Next.js, for seamless and fast deployment of modern web applications.
